@@ -17,7 +17,7 @@ public interface UserService {
 
     // boolean isEmailDuplicate(String email);
 
-    // User updateUser(int id, User user);
+    User updateUser(int id, User user);
 
     // void updateUserEnabledStatus(int id, boolean enabled);
 

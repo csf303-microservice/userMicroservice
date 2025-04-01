@@ -8,5 +8,4 @@ public class UsemicroserviceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(UsemicroserviceApplication.class, args);
 	}
-
 }
