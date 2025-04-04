@@ -3,6 +3,7 @@ package bt.edu.gcit.usemicroservice.service;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 
 import bt.edu.gcit.usemicroservice.entity.User;
 
@@ -15,11 +16,11 @@ public interface UserService {
 
     void deleteByID(int id);
 
-    // boolean isEmailDuplicate(String email);
+    boolean isEmailDuplicate(String email);
 
     User updateUser(int id, User user);
 
-    // void updateUserEnabledStatus(int id, boolean enabled);
+    void updateUserEnabledStatus(int id, boolean enabled);
 
-    // void uploadUserPhoto(int id, MultipartFile photo);
+    void uploadUserPhoto(int id, MultipartFile photo) throws IOException;
 }

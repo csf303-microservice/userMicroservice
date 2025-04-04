@@ -23,10 +23,13 @@ public class ShopmeSecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer -> configurer
-                .requestMatchers(HttpMethod.POST, "/api/users").permitAll());
+                .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/users/checkDuplicateEmail").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/users/{id}").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").permitAll()
+                .requestMatchers(HttpMethod.PUT,"/api/users/{id}/enabled").permitAll());
 
         http.csrf().disable();
-
         return http.build();
     }
 }

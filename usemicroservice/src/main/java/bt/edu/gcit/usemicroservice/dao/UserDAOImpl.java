@@ -10,6 +10,10 @@ import org.springframework.stereotype.Repository;
 import bt.edu.gcit.usemicroservice.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import bt.edu.gcit.usemicroservice.exception.UserNotFoundException;
+
+import jakarta.persistence.TypedQuery;
+import java.util.List;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -31,7 +35,8 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User findByID(int id) {
-        return entityManager.find(User.class, id);
+        User user = entityManager.find(User.class, theId);
+ return user;
     }
 
     @Override
@@ -53,19 +58,42 @@ public class UserDAOImpl implements UserDAO {
         return false;
     }
 
-    @Override
-    @Transactional
-    public User updateUser(int id, User user) {
-        User existingUser = entityManager.find(User.class, id);
-        if (existingUser != null) {
-            existingUser.setEmail(user.getEmail());
-            existingUser.setPassword(user.getPassword());
-            return entityManager.merge(existingUser);
-        }
-        return null;
-    }
+    // @Override
+    // @Transactional
+    // public User updateUser(int id, User user) {
+    //     User existingUser = entityManager.find(User.class, id);
+    //     if (existingUser != null) {
+    //         existingUser.setEmail(user.getEmail());
+    //         existingUser.setPassword(user.getPassword());
+    //         return entityManager.merge(existingUser);
+    //     }
+    //     return null;
+    // }
 
     @Override
     public void updateUserEnabledStatus(int id,boolean enabled){
+        User user = entityManager.find(User.class, id);
+ System.out.println(user);
+ if (user == null) {
+ throw new UserNotFoundException("User not found with id " + id);
+ }
+ user.setEnabled(enabled);
+ entityManager.persist(user);
     }
+
+    @Override
+ public User findByEmail(String email) {
+ TypedQuery<User> query = entityManager.createQuery("from User where email =
+:email", User.class);
+ query.setParameter("email", email);
+ List<User> users = query.getResultList();
+ System.out.println(users.size());
+ if (users.isEmpty()) {
+ return null;
+ } else {
+ System.out.println(users.get(0)+" "+users.get(0).getEmail());
+ return users.get(0);
+ }
+ }
+
 }

@@ -12,4 +12,5 @@ public interface UserDAO {
     boolean isEmailDuplicate(String email);
     User updateUser(int id,User user);
     void updateUserEnabledStatus(int id, boolean enabled);
+    User findByEmail(String email);
 }
