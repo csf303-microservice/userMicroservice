@@ -50,7 +50,7 @@ public class UserRestController {
             @RequestPart("lastName") String lastName,
             @RequestPart("email") String email,
             @RequestPart("password") String password,
-            @RequestPart("photo") String photo,
+            @RequestPart("photo") MultipartFile photo,
             @RequestPart("roles") String rolesJson) {
         try {
             // Create a new User object
@@ -71,8 +71,8 @@ public class UserRestController {
             User savedUser = userService.save(user);
 
             // Upload the user photo
-            // System.out.println("Uploading photo" + savedUser.getId().intValue());
-            // userService.uploadUserPhoto(savedUser.getId().intValue(), photo);
+            System.out.println("Uploading photo" + savedUser.getId().intValue());
+            userService.uploadUserPhoto(savedUser.getId().intValue(), photo);
 
             // Return the saved user
             return savedUser;

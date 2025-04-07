@@ -1,13 +1,14 @@
 package bt.edu.gcit.usemicroservice.service;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder; 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -68,7 +69,8 @@ public class UserServiceImpl implements UserService {
         existingUser.setLastName(updatedUser.getLastName());
         existingUser.setEmail(updatedUser.getEmail());
 
-        // Check if the password has changed. If it has, encode the new password before saving.
+        // Check if the password has changed. If it has, encode the new password before
+        // saving.
         if (!existingUser.getPassword().equals(updatedUser.getPassword())) {
 
             existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
@@ -102,24 +104,30 @@ public class UserServiceImpl implements UserService {
         if (photo.getSize() > 1024 * 1024) {
             throw new FileSizeException("File size must be < 1MB");
         }
+
         // String filename = StringUtils.cleanPath(photo.getOriginalFilename());
         // Path uploadPath = Paths.get(uploadDir, filename);
         // photo.transferTo(uploadPath);
         // user.setPhoto(filename);
         // save(user);
+
+        Path uploadPath = Paths.get(uploadDir);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath); // Create the directory if it doesn't exist
+        }
+
+        // Generate a unique filename
         String originalFilename = StringUtils.cleanPath(photo.getOriginalFilename());
-        String filenameExtension
-                = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-        String filenameWithoutExtension = originalFilename.substring(0,
-                originalFilename.lastIndexOf("."));
+        String filenameExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        String filenameWithoutExtension = originalFilename.substring(0, originalFilename.lastIndexOf("."));
         String timestamp = String.valueOf(System.currentTimeMillis());
-        // Append the timestamp to the filename
-        String filename = filenameWithoutExtension + "_" + timestamp + "."
-                + filenameExtension;
+        String filename = filenameWithoutExtension + "_" + timestamp + "." + filenameExtension;
 
-        Path uploadPath = Paths.get(uploadDir, filename);
-        photo.transferTo(uploadPath);
+        // Save the file
+        Path filePath = uploadPath.resolve(filename);
+        photo.transferTo(filePath);
 
+        // Update the user with the photo filename
         user.setPhoto(filename);
         save(user);
     }
