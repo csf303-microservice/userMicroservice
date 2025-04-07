@@ -10,7 +10,7 @@ public interface UserDAO {
     User findByID(int id);
     void deleteByID(int id);
     boolean isEmailDuplicate(String email);
-    User updateUser(int id,User user);
+    // User updateUser(int id,User user);
     void updateUserEnabledStatus(int id, boolean enabled);
     User findByEmail(String email);
 }

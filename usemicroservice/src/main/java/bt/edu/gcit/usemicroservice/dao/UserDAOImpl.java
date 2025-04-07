@@ -4,19 +4,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
-import bt.edu.gcit.usemicroservice.entity.User;
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
-import bt.edu.gcit.usemicroservice.exception.UserNotFoundException;
 
+import bt.edu.gcit.usemicroservice.entity.User;
+import bt.edu.gcit.usemicroservice.exception.UserNotFoundException;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import java.util.List;
+import jakarta.transaction.Transactional;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
+
     private EntityManager entityManager;
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -35,8 +34,8 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User findByID(int id) {
-        User user = entityManager.find(User.class, theId);
- return user;
+        User user = entityManager.find(User.class, id);
+        return user;
     }
 
     @Override
@@ -69,31 +68,30 @@ public class UserDAOImpl implements UserDAO {
     //     }
     //     return null;
     // }
-
+    
     @Override
-    public void updateUserEnabledStatus(int id,boolean enabled){
+    public void updateUserEnabledStatus(int id, boolean enabled) {
         User user = entityManager.find(User.class, id);
- System.out.println(user);
- if (user == null) {
- throw new UserNotFoundException("User not found with id " + id);
- }
- user.setEnabled(enabled);
- entityManager.persist(user);
+        System.out.println(user);
+        if (user == null) {
+            throw new UserNotFoundException("User not found with id " + id);
+        }
+        user.setEnabled(enabled);
+        entityManager.persist(user);
     }
 
     @Override
- public User findByEmail(String email) {
- TypedQuery<User> query = entityManager.createQuery("from User where email =
-:email", User.class);
- query.setParameter("email", email);
- List<User> users = query.getResultList();
- System.out.println(users.size());
- if (users.isEmpty()) {
- return null;
- } else {
- System.out.println(users.get(0)+" "+users.get(0).getEmail());
- return users.get(0);
- }
- }
+    public User findByEmail(String email) {
+        TypedQuery<User> query = entityManager.createQuery("from User where email =:email", User.class);
+        query.setParameter("email", email);
+        List<User> users = query.getResultList();
+        System.out.println(users.size());
+        if (users.isEmpty()) {
+            return null;
+        } else {
+            System.out.println(users.get(0) + " " + users.get(0).getEmail());
+            return users.get(0);
+        }
+    }
 
 }
