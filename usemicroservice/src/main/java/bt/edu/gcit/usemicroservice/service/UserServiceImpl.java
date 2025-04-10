@@ -97,39 +97,36 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void uploadUserPhoto(int id, MultipartFile photo) throws IOException {
-        User user = findByID(id);
+        User user = userDAO.findByID(id);
         if (user == null) {
-            throw new UserNotFoundException("User not found with id " + id);
+            throw new UserNotFoundException("User not found with id: " + id);
         }
+
         if (photo.getSize() > 1024 * 1024) {
-            throw new FileSizeException("File size must be < 1MB");
+            throw new FileSizeException("File size exceeds the limit of 1MB");
         }
 
-        // String filename = StringUtils.cleanPath(photo.getOriginalFilename());
-        // Path uploadPath = Paths.get(uploadDir, filename);
-        // photo.transferTo(uploadPath);
-        // user.setPhoto(filename);
-        // save(user);
-
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath); // Create the directory if it doesn't exist
-        }
-
-        // Generate a unique filename
         String originalFilename = StringUtils.cleanPath(photo.getOriginalFilename());
+        System.out.println("Original filename: " + originalFilename);
+
         String filenameExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        System.out.println("Filename extension: " + filenameExtension);
+
         String filenameWithoutExtension = originalFilename.substring(0, originalFilename.lastIndexOf("."));
+        System.out.println("Filename without extension: " + filenameWithoutExtension);
+
         String timestamp = String.valueOf(System.currentTimeMillis());
+        System.out.println("Timestamp: " + timestamp);
+
         String filename = filenameWithoutExtension + "_" + timestamp + "." + filenameExtension;
+        System.out.println("Generated filename: " + filename);
 
-        // Save the file
-        Path filePath = uploadPath.resolve(filename);
-        photo.transferTo(filePath);
+        Path uploadPath = Paths.get(uploadDir, filename);
+        System.out.println("Upload path: " + uploadPath);
 
-        // Update the user with the photo filename
+        photo.transferTo(uploadPath);
+
         user.setPhoto(filename);
         save(user);
     }
-
 }

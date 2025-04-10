@@ -123,5 +123,4 @@ public class UserRestController {
         System.out.println("User enabled status updated successfully");
         return ResponseEntity.ok().build();
     }
-
 }
