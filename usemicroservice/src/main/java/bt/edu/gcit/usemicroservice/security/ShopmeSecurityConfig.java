@@ -40,7 +40,7 @@ public class ShopmeSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("Admin")
                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users/checkDuplicateEmail").hasAuthority("Admin")
-                .requestMatchers(HttpMethod.PUT, "/api/users/{id}").hasAuthority("Admin")
+                .requestMatchers(HttpMethod.PUT, "/api/users/{id}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasAuthority("Admin")
                 .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").hasAuthority("Admin")
                 .requestMatchers(HttpMethod.PUT, "/api/users/{id}/enabled").hasAuthority("Admin")

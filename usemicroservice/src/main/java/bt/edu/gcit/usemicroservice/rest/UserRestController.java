@@ -2,6 +2,7 @@ package bt.edu.gcit.usemicroservice.rest;
 
 import bt.edu.gcit.usemicroservice.entity.User;
 import bt.edu.gcit.usemicroservice.service.UserService;
+import io.micrometer.common.lang.NonNull;
 
 import java.util.List;
 
@@ -33,6 +34,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import bt.edu.gcit.usemicroservice.entity.Role;
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 @RestController
 @RequestMapping("/api")
 public class UserRestController {
@@ -46,12 +50,12 @@ public class UserRestController {
 
     @PostMapping(value = "/users", consumes = "multipart/form-data")
     public User save(
-            @RequestPart("firstName") String firstName,
-            @RequestPart("lastName") String lastName,
-            @RequestPart("email") String email,
-            @RequestPart("password") String password,
-            @RequestPart("photo") MultipartFile photo,
-            @RequestPart("roles") String rolesJson) {
+            @RequestPart("firstName") @Valid @NotNull(message = "First name is required.Currently it is empty") String firstName,
+            @RequestPart("lastName") @Valid @NotNull String lastName,
+            @RequestPart("email") @Valid @NotNull String email,
+            @RequestPart("password") @Valid @NotNull String password,
+            @RequestPart("photo") @Valid @NotNull MultipartFile photo,
+            @RequestPart("roles") @Valid @NotNull String rolesJson) {
         try {
             // Create a new User object
             User user = new User();

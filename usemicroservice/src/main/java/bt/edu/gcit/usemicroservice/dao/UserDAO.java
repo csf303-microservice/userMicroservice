@@ -13,4 +13,5 @@ public interface UserDAO {
     // User updateUser(int id,User user);
     void updateUserEnabledStatus(int id, boolean enabled);
     User findByEmail(String email);
+    User justSave(User user);
 }

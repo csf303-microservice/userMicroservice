@@ -33,6 +33,11 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public User justSave(User user) {
+        return entityManager.merge(user);
+    }
+
+    @Override
     public User findByID(int id) {
         User user = entityManager.find(User.class, id);
         return user;

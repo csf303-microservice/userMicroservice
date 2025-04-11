@@ -28,9 +28,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
         System.out.println("inside auth controller");
+
         UserDetails userDetails = authService.login(user.getEmail(),
                 user.getPassword());
-                
+
         System.out.println("i am below the auth controller");
         String jwt = jwtUtil.generateToken(userDetails);
         Map<String, Object> response = new HashMap<>();
