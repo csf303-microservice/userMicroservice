@@ -15,12 +15,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import bt.edu.gcit.usemicroservice.security.oauth.CustomerOAuth2UserService;
+import bt.edu.gcit.usemicroservice.security.oauth.OAuth2LoginSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class ShopmeSecurityConfig {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
+    @Autowired
+    private CustomerOAuth2UserService oAuth2UserService;
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -37,6 +43,7 @@ public class ShopmeSecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer -> configurer
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/logout").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("Admin")
                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users/checkDuplicateEmail").hasAuthority("Admin")
@@ -44,9 +51,25 @@ public class ShopmeSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasAuthority("Admin")
                 .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").hasAuthority("Admin")
                 .requestMatchers(HttpMethod.PUT, "/api/users/{id}/enabled").hasAuthority("Admin")
-                .requestMatchers("/api/roles/**").permitAll()).addFilterBefore(jwtRequestFilter,
+                .requestMatchers("/api/roles/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/users/{id}/enabled").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/countries/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/countries").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/countries").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/countries").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/states/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/states/{country_id}").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/states").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/states").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/customer/*").permitAll()).addFilterBefore(jwtRequestFilter,
                         UsernamePasswordAuthenticationFilter.class);
 
+        http.oauth2Login()
+                .userInfoEndpoint()
+                .userService(oAuth2UserService)
+                .and()
+                .successHandler(oAuth2LoginSuccessHandler);
+                
         http.csrf().disable();
         return http.build();
     }

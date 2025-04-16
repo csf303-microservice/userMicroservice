@@ -16,6 +16,8 @@ import bt.edu.gcit.usemicroservice.service.JWTUtil;
 import org.springframework.http.ResponseEntity;
 import java.util.HashMap;
 import java.util.Map;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,17 +28,32 @@ public class AuthController {
     private JWTUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
-        System.out.println("inside auth controller");
-
+    public ResponseEntity<Map<String, Object>> login(@RequestBody User user, HttpServletResponse response) {
         UserDetails userDetails = authService.login(user.getEmail(),
                 user.getPassword());
-
-        System.out.println("i am below the auth controller");
         String jwt = jwtUtil.generateToken(userDetails);
-        Map<String, Object> response = new HashMap<>();
-        response.put("jwt", jwt);
-        response.put("user", userDetails);
-        return ResponseEntity.ok(response);
+
+        // Set JWT as a cookie
+        Cookie jwtCookie = new Cookie("JWT-TOKEN", jwt);
+        jwtCookie.setHttpOnly(true);
+        response.addCookie(jwtCookie);
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("user", userDetails);
+        return ResponseEntity.ok(responseBody);
+
+        // Map<String, Object> response = new HashMap<>();
+        // response.put("jwt", jwt);
+        // response.put("user", userDetails);
+        // return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        // Clear JWT cookie
+        Cookie jwtCookie = new Cookie("JWT-TOKEN", null);
+        jwtCookie.setMaxAge(0);
+        response.addCookie(jwtCookie);
+        return ResponseEntity.ok().build();
     }
 }
