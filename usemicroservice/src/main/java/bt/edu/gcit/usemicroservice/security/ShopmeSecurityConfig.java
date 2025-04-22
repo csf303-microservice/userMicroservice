@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -65,11 +66,13 @@ public class ShopmeSecurityConfig {
                         UsernamePasswordAuthenticationFilter.class);
 
         http.oauth2Login()
-                .userInfoEndpoint()
-                .userService(oAuth2UserService)
-                .and()
-                .successHandler(oAuth2LoginSuccessHandler);
-                
+        .userInfoEndpoint()
+        .userService(oAuth2UserService)
+        .and()
+        .successHandler(oAuth2LoginSuccessHandler);
+
+        // http.oauth2Client(Customizer.withDefaults());
+
         http.csrf().disable();
         return http.build();
     }
