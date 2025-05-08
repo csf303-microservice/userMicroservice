@@ -14,8 +14,8 @@ public class State {
     @Column(name = "name")
     private String name;
 
-    @JsonBackReference
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
 

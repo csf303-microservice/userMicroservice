@@ -33,11 +33,12 @@ public class ShopeMeUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userDAO.findByEmail(email);
         if (user != null) {
-            List<GrantedAuthority> authorities = user.getRoles().stream()
-                    .map(role -> new SimpleGrantedAuthority(role.getName()))
-                    .collect(Collectors.toList());
-            return new org.springframework.security.core.userdetails.User(user.getEmail(),
-                    user.getPassword(), authorities);
+            // List<GrantedAuthority> authorities = user.getRoles().stream()
+            //         .map(role -> new SimpleGrantedAuthority(role.getName()))
+            //         .collect(Collectors.toList());
+            // return new org.springframework.security.core.userdetails.User(user.getEmail(),
+            //         user.getPassword(), authorities);
+            return new ShopmeuserDetails(user);
         }
 
         Customer customer = customerDAO.findByEMail(email); // try to load a Customer if no User was found

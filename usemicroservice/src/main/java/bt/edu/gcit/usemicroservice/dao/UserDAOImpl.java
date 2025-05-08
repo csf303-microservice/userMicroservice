@@ -45,7 +45,11 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public List<User> getAllUsers() {
-        return entityManager.createQuery("from User", User.class).getResultList();
+        // Implement the logic to retrieve all users from the database
+        // and return them as a list
+        TypedQuery<User> query = entityManager.createQuery("from User", User.class);
+        List<User> users = query.getResultList();
+        return users;
     }
 
     @Override
@@ -65,15 +69,15 @@ public class UserDAOImpl implements UserDAO {
     // @Override
     // @Transactional
     // public User updateUser(int id, User user) {
-    //     User existingUser = entityManager.find(User.class, id);
-    //     if (existingUser != null) {
-    //         existingUser.setEmail(user.getEmail());
-    //         existingUser.setPassword(user.getPassword());
-    //         return entityManager.merge(existingUser);
-    //     }
-    //     return null;
+    // User existingUser = entityManager.find(User.class, id);
+    // if (existingUser != null) {
+    // existingUser.setEmail(user.getEmail());
+    // existingUser.setPassword(user.getPassword());
+    // return entityManager.merge(existingUser);
     // }
-    
+    // return null;
+    // }
+
     @Override
     public void updateUserEnabledStatus(int id, boolean enabled) {
         User user = entityManager.find(User.class, id);

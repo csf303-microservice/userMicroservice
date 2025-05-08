@@ -46,7 +46,7 @@ public class ShopmeSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/logout").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("Admin")
-                .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/users").hasAuthority("Admin")
                 .requestMatchers(HttpMethod.GET, "/api/users/checkDuplicateEmail").hasAuthority("Admin")
                 .requestMatchers(HttpMethod.PUT, "/api/users/{id}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasAuthority("Admin")
@@ -62,16 +62,16 @@ public class ShopmeSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/states/{country_id}").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/api/states").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/states").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/customer/*").permitAll()).addFilterBefore(jwtRequestFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                .requestMatchers("/login/**", "/oauth2/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/customer/*").permitAll()
+                .anyRequest().authenticated())
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.oauth2Login()
-        .userInfoEndpoint()
-        .userService(oAuth2UserService)
-        .and()
-        .successHandler(oAuth2LoginSuccessHandler);
-
-        // http.oauth2Client(Customizer.withDefaults());
+        // http.oauth2Login()
+        //         .userInfoEndpoint()
+        //         .userService(oAuth2UserService)
+        //         .and()
+        //         .successHandler(oAuth2LoginSuccessHandler);
 
         http.csrf().disable();
         return http.build();

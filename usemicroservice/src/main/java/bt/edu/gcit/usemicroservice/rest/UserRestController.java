@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import bt.edu.gcit.usemicroservice.entity.Role;
 import java.util.Set;
-
+import bt.edu.gcit.usemicroservice.service.ImageUploadService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -42,10 +42,12 @@ import javax.validation.constraints.NotNull;
 public class UserRestController {
 
     private UserService userService;
+    private ImageUploadService imageUploadService;
 
     @Autowired
-    public UserRestController(UserService userService) {
+    public UserRestController(UserService userService, ImageUploadService imageUploadService) {
         this.userService = userService;
+        this.imageUploadService = imageUploadService;
     }
 
     @PostMapping(value = "/users", consumes = "multipart/form-data")
@@ -78,6 +80,16 @@ public class UserRestController {
             System.out.println("Uploading photo" + savedUser.getId().intValue());
             userService.uploadUserPhoto(savedUser.getId().intValue(), photo);
 
+            // Upload the user photo
+            // System.out.println("Uploading photo"+savedUser.getId().intValue());
+            // userService.uploadUserPhoto(savedUser.getId().intValue(), photo);
+            // Upload the user photo to Cloudinary
+
+            String imageUrl = imageUploadService.uploadImage(photo);
+            savedUser.setPhoto(imageUrl);
+            // Update the user with the photo URL
+            userService.updateUser(savedUser.getId().intValue(), savedUser);
+            
             // Return the saved user
             return savedUser;
         } catch (IOException e) {
