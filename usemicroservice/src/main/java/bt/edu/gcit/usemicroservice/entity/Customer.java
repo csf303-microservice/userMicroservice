@@ -16,28 +16,28 @@ public class Customer {
     private Long id;
     @Column(name = "email", nullable = false)
     private String email;
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = true)
     private String password;
     @Column(name = "first_name", nullable = false)
     private String firstName;
     @Column(name = "last_name", nullable = false)
     private String lastName;
-    @Column(name = "phone_number", nullable = false)
+    @Column(name = "phone_number", nullable = true)
     private String phoneNumber;
-    @Column(name = "address_line1", nullable = false)
+    @Column(name = "address_line1", nullable = true)
     private String addressLine1;
     @Column(name = "address_line2")
     private String addressLine2;
-    @Column(name = "city", nullable = false)
+    @Column(name = "city", nullable = true)
     private String city;
-    @Column(name = "state", nullable = false)
+    @Column(name = "state", nullable = true)
     private String state;
-    
+
     @ManyToOne
-    @JoinColumn(name = "country_id", nullable = false)
+    @JoinColumn(name = "country_id", nullable = true)
     private Country country;
 
-    @Column(name = "postal_code", nullable = false)
+    @Column(name = "postal_code", nullable = true)
     private String postalCode;
     @Column(name = "created_time", nullable = false)
     private Date createdTime;

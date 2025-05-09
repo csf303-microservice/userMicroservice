@@ -33,14 +33,18 @@ public class OAuth2LoginSuccessHandler extends
         // This method is called when a user has been successfully authenticated.
         // Here you can perform any actions you need to upon successful login.
         CustomerOAuth2User oauthUser = (CustomerOAuth2User) authentication.getPrincipal();
+
         String name = oauthUser.getName();
         String email = oauthUser.getEmail();
         String countryCode = request.getLocale().getCountry();
         String clientName = oauthUser.getClientName();
+
         System.out.println("OAuth2LoginSuccessHandler: " + name + " | " + email);
         System.out.println("Client Name : " + clientName);
+
         AuthenticationType authenticationType = getAuthenticationType(clientName);
         Customer customer = customerService.findByEMail(email);
+
         if (customer == null) {
             customerService.addNewCustomerUponOAuthLogin(name, email, countryCode,
                     authenticationType);
@@ -48,6 +52,7 @@ public class OAuth2LoginSuccessHandler extends
             customerService.updateAuthenticationType(customer.getId(),
                     authenticationType);
         }
+
         super.onAuthenticationSuccess(request, response, authentication);
     }
 

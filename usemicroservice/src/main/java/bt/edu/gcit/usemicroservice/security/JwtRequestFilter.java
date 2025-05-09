@@ -35,10 +35,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             username = jwtUtil.extractUsername(jwt);
         }
 
-        System.out.println("Security Context Holder : " + SecurityContextHolder.getContext());
-        System.out.println(
-                "Security Context Holder with Auth : " + SecurityContextHolder.getContext().getAuthentication());
-
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
@@ -50,11 +46,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
-
-        System.out.println(" AFter ::: Security Context Holder : " + SecurityContextHolder.getContext());
-        System.out.println(
-                "AFter ::: Security Context Holder with Auth : "
-                        + SecurityContextHolder.getContext().getAuthentication());
 
         chain.doFilter(request, response);
     }

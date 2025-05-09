@@ -24,7 +24,8 @@ public class CustomerDAOImpl implements CustomerDAO {
         TypedQuery<Customer> query = entityManager.createQuery(
                 "SELECT c FROM Customer c WHERE c.email = :email", Customer.class);
         query.setParameter("email", email);
-        return query.getSingleResult();
+        List<Customer> results = query.getResultList();
+        return results.isEmpty() ? null : results.get(0);
     }
 
     @Override
@@ -63,7 +64,7 @@ public class CustomerDAOImpl implements CustomerDAO {
             // If the country is null, throw an exception or handle this case as appropriate
             throw new RuntimeException("Country is null");
         }
-        customer.setAuthenticationType(AuthenticationType.DATABASE);
+        // customer.setAuthenticationType(AuthenticationType.DATABASE);
         entityManager.persist(customer);
         return customer;
         // entityManager.merge(customer);
@@ -81,16 +82,17 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     // @Override
     // public boolean verify(String code) {
-    //     TypedQuery<Customer> query = entityManager
-    //             .createQuery("SELECT c FROMCustomer c WHERE c.verificationCode = :code", Customer.class);
-    //     query.setParameter("code", code);
-    //     Customer customer = query.getSingleResult();
-    //     if (customer != null) {
-    //         customer.setVerificationCode(true);
-    //         entityManager.merge(customer);
-    //         return true;
-    //     }
-    //     return false;
+    // TypedQuery<Customer> query = entityManager
+    // .createQuery("SELECT c FROMCustomer c WHERE c.verificationCode = :code",
+    // Customer.class);
+    // query.setParameter("code", code);
+    // Customer customer = query.getSingleResult();
+    // if (customer != null) {
+    // customer.setVerificationCode(true);
+    // entityManager.merge(customer);
+    // return true;
+    // }
+    // return false;
     // }
 
     @Override
